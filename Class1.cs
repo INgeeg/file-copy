@@ -59,16 +59,19 @@ namespace cmd
                         exists = true;
                         if (!FilesAreEqual(sr,tr))
                         {
+                            Console.WriteLine("..." + sr.FullName + " - file is duplicated");
                             list.Add(new KeyValuePair<string, string>(sr.FullName, tr.FullName.Replace(tr.Name, "new_" + tr.Name)));
                         }
                     }
                 }
-                if (!exists) { list.Add(new KeyValuePair<string, string>(sr.FullName, trg.FullName + "\\" + sr.Name)); }               
+                if (!exists) {
+                    Console.WriteLine("..." + sr.FullName + " - file is transferred");
+                    list.Add(new KeyValuePair<string, string>(sr.FullName, trg.FullName + "\\" + sr.Name)); }               
             }
 
             foreach (var i in list)
             {
-                //Console.WriteLine(i.Key + "  ---  " + i.Value);
+                
                 File.Copy(i.Key, i.Value, true);
             }
 
@@ -93,6 +96,7 @@ namespace cmd
                     }
                 }
                 if (!exists) {
+                    Console.WriteLine("..." +  sc.FullName+ " - folder is transfered");
                     CopyFolder(sc.FullName, trg.FullName +"\\" +sc.Name);
                 }
             }
@@ -121,8 +125,8 @@ namespace cmd
 
         public static void Main(string[] args ) {
 
-            string source = @"C:\t1";
-            string target = @"C:\t2";
+            string source = args[0];
+            string target = args[1];
             FileHandler(source, target);
             
 
