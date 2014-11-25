@@ -37,21 +37,7 @@ namespace cmd
             return true;
         }
 
-        void FolderHandler(string s,string t) {
-            System.IO.DirectoryInfo src = new System.IO.DirectoryInfo(s);
-            System.IO.DirectoryInfo[] srcFolders = src.GetDirectories();
-
-            System.IO.DirectoryInfo trg = new System.IO.DirectoryInfo(t);
-            System.IO.DirectoryInfo[] trgFolders = trg.GetDirectories();
-            foreach (System.IO.DirectoryInfo sc in srcFolders)
-            {
-                foreach (System.IO.DirectoryInfo tr in trgFolders)
-                {
-                    Console.WriteLine(sc.Name + "  " + tr.Name);
-                }
-            }
-
-        }
+      
 
         static void FileHandler(string s, string t)
         {
@@ -86,35 +72,48 @@ namespace cmd
                 File.Copy(i.Key, i.Value, true);
             }
 
+            FolderHandler(s, t);
+        }
+
+        static void FolderHandler(string s, string t)
+        {
+            DirectoryInfo src = new DirectoryInfo(s);
+            DirectoryInfo[] srcFolders = src.GetDirectories();
+
+            DirectoryInfo trg = new System.IO.DirectoryInfo(t);
+            DirectoryInfo[] trgFolders = trg.GetDirectories();
+            foreach (DirectoryInfo sc in srcFolders)
+            {
+                bool exists = false;
+                foreach (System.IO.DirectoryInfo tr in trgFolders)
+                {
+                    if (sc.Name == tr.Name) { 
+                        exists = true;
+                        FileHandler(sc.FullName, tr.FullName);
+                    }
+                }
+                if (!exists) {
+                    Console.WriteLine(sc.FullName);
+                    Console.WriteLine(trg.FullName);
+                    //DirectoryCopy(sc.FullName, trg.FullName,true);
+                }
+            }
+
         }
 
         public static void Main(string[] args ) {
 
             string source = @"C:\t1";
             string target = @"C:\t2";
-
-
-
             FileHandler(source, target);
-            foreach (string src in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
-            {
-                foreach (string trg in Directory.GetFiles(target, "*.*", SearchOption.AllDirectories))
-                {
-                    //Console.WriteLine(src + "  ---  " + trg);
-                    //if (src == trg)
-                    //{
-                    //    Console.WriteLine("same file");
+            
 
-                    //    if (src.GetHashCode() != src.GetHashCode())
-                    //    {
-                    //        Console.WriteLine("same file but diff content");
-
-                    //        File.Copy(src, src.Replace(src, "_" + trg), true);
-                    //    }
-                    //}
-
-                }
-            }
+            //foreach (string src in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
+            //{
+            //    foreach (string trg in Directory.GetFiles(target, "*.*", SearchOption.AllDirectories))
+            //    {
+            //    }
+            //}
 
           
             Console.ReadKey();
