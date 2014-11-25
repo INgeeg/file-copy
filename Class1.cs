@@ -61,8 +61,7 @@ namespace cmd
             DirectoryInfo trg = new DirectoryInfo(t);
             FileInfo[] trgFiles = trg.GetFiles();
 
-            ArrayList files = new ArrayList(); 
-
+            var list = new List<KeyValuePair<string, string>>();
             foreach (FileInfo sr in srcFiles)
             {
                 bool exists = false;
@@ -74,17 +73,17 @@ namespace cmd
                         exists = true;
                         if (!FilesAreEqual(sr,tr))
                         {
-                            exists = false;
+                            list.Add(new KeyValuePair<string, string>(sr.FullName, tr.FullName.Replace(tr.Name, "new_" + tr.Name)));
                         }
                     }
                 }
-                if (!exists) { files.Add(sr.FullName); }               
+                if (!exists) { list.Add(new KeyValuePair<string, string>(sr.FullName, trg.FullName + "\\" + sr.Name)); }               
             }
 
-
-            foreach (string i in files)
+            foreach (var i in list)
             {
-                Console.WriteLine(i);
+                //Console.WriteLine(i.Key + "  ---  " + i.Value);
+                File.Copy(i.Key, i.Value, true);
             }
 
         }
